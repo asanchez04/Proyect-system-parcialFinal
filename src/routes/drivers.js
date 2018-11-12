@@ -4,9 +4,9 @@ const router = express.Router();
 const mysqlConnection = require('../database');
 
 //Listar todos los drivers
-router.get('/api/drivers', (req, res) => {
+router.get('/drivers', (req, res) => {
 
-    mysqlConnection.query('SELECT * FROM proyecto.drivers', (err, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM proyecto.driver', (err, rows, fields) => {
         if(!err) {
             res.json(rows);
         } else {
@@ -16,9 +16,9 @@ router.get('/api/drivers', (req, res) => {
 });
 
 //Buscar user por id
-router.get('/api/drivers/:iddrivers', (req, res) => {
-    const { iddrivers } = req.params;
-    mysqlConnection.query('SELECT * FROM proyecto.drivers WHERE iddrivers = ?', [iddrivers], (err, rows, fields) => {
+router.get('/drivers/:id', (req, res) => {
+    const { id } = req.params;
+    mysqlConnection.query('SELECT * FROM proyecto.driver WHERE id = ?', [id], (err, rows, fields) => {
         if(!err) {
             res.json(rows[0]);
         } else {
@@ -28,12 +28,12 @@ router.get('/api/drivers/:iddrivers', (req, res) => {
 });
 
 //Registrar nuevo driver
-router.post('/api/drivers', (req, res) => {
-    const { iddrivers, Nombre, identificacion, email, celular, placa, foto, fotoVehiculo, users_idusers} = req.body;
+router.post('/drivers', (req, res) => {
+    const { id, nombre, identificacion, email, clave, celular, placa, foto, fotovehiculo} = req.body;
     const query = `
         CALL driverAddOrEdit (?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
-    mysqlConnection.query(query, [iddrivers, Nombre, identificacion, email, celular, placa, foto, fotoVehiculo, users_idusers], (err, rows, fields) => {
+    mysqlConnection.query(query, [id, nombre, identificacion, email, clave, celular, placa, foto, fotovehiculo], (err, rows, fields) => {
         if (!err) {
             res.json({Status: 'Driver Saved '});
         } else {
@@ -42,10 +42,24 @@ router.post('/api/drivers', (req, res) => {
     });
 });
 
+//Actualizar driver
+router.put('/drivers/:id', (req, res) => {
+    const {nombre, identificacion, email, clave, celular, placa, foto, fotovehiculo} = req.body
+    const {id} = req.params;
+    const query = 'CALL driverAddOrEdit (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    mysqlConnection.query(query, [id, nombre, identificacion, email, clave, celular, placa, foto, fotovehiculo], (err, rows, fields) => {
+        if(!err) {
+            res.json({Status: 'Driver Update'});
+        } else {
+            console.log(err);
+        }
+    });
+});
+
 //Elimiar user
-router.delete('/api/drivers/:iddrivers', (req, res) => {
-    const { iddrivers } = req.params;
-    mysqlConnection.query('DELETE FROM proyecto.drivers WHERE iddrivers = ?', [iddrivers], (err, rows, fields) => {
+router.delete('/drivers/:id', (req, res) => {
+    const { id } = req.params;
+    mysqlConnection.query('DELETE FROM proyecto.driver WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Driver Deleted'});
         } else {

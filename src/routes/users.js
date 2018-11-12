@@ -4,9 +4,9 @@ const router = express.Router();
 const mysqlConnection = require('../database');
 
 //Listar todos los users
-router.get('/api/users', (req, res) => {
+router.get('/users', (req, res) => {
 
-    mysqlConnection.query('SELECT * FROM proyecto.users', (err, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM proyecto.user', (err, rows, fields) => {
         if(!err) {
             res.json(rows);
         } else {
@@ -16,9 +16,9 @@ router.get('/api/users', (req, res) => {
 });
 
 //Buscar user por id
-router.get('/api/users/:idusers', (req, res) => {
-    const { idusers } = req.params;
-    mysqlConnection.query('SELECT * FROM proyecto.users WHERE idusers = ?', [idusers], (err, rows, fields) => {
+router.get('/users/:id', (req, res) => {
+    const { id } = req.params;
+    mysqlConnection.query('SELECT * FROM proyecto.user WHERE id = ?', [id], (err, rows, fields) => {
         if(!err) {
             res.json(rows[0]);
         } else {
@@ -28,12 +28,12 @@ router.get('/api/users/:idusers', (req, res) => {
 });
 
 //Registrar nuevo user
-router.post('/api/users', (req, res) => {
-    const { idusers, nombre, email, celular, foto} = req.body;
+router.post('/users', (req, res) => {
+    const { id, nombre, email, clave, celular, foto} = req.body;
     const query = `
-        CALL userAddOrEdit (?, ?, ?, ?, ?);
+        CALL userAddOrEdit (?, ?, ?, ?, ?, ?);
     `;
-    mysqlConnection.query(query, [idusers, nombre, email, celular, foto], (err, rows, fields) => {
+    mysqlConnection.query(query, [id, nombre, email, clave, celular, foto], (err, rows, fields) => {
         if (!err) {
             res.json({Status: 'User Saved '});
         } else {
@@ -43,13 +43,11 @@ router.post('/api/users', (req, res) => {
 });
 
 //Actualizar user
-router.put('/api/users/:idusers', (req, res) => {
-    const {nombre, email, celular, foto} = req.body
-    const {idusers} = req.params;
-    const query = `
-        CALL userAddOrEdit (?, ?, ?, ?, ?);
-    `;
-    mysqlConnection.query(query, [idusers, nombre, email, celular, foto], (err, rows, fields) => {
+router.put('/users/:id', (req, res) => {
+    const {nombre, email, clave, celular, foto} = req.body
+    const {id} = req.params;
+    const query = 'CALL userAddOrEdit (?, ?, ?, ?, ?, ?)';
+    mysqlConnection.query(query, [id, nombre, email, clave, celular, foto], (err, rows, fields) => {
         if(!err) {
             res.json({Status: 'User Update'});
         } else {
@@ -59,9 +57,9 @@ router.put('/api/users/:idusers', (req, res) => {
 });
 
 //Elimiar user
-router.delete('/api/users/:idusers', (req, res) => {
-    const { idusers } = req.params;
-    mysqlConnection.query('DELETE FROM proyecto.users WHERE idusers = ?', [idusers], (err, rows, fields) => {
+router.delete('/users/:id', (req, res) => {
+    const { id } = req.params;
+    mysqlConnection.query('DELETE FROM proyecto.user WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'User Deleted'});
         } else {
