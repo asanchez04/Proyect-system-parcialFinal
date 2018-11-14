@@ -60,14 +60,18 @@ router.post('/users', (req, res) => {
 });
 
 //Actualizar user
-router.put('/users/:id', (req, res) => {
-    const { nombre, email, clave, celular, foto } = req.body
-    const { id } = req.params;
-    const query = 'CALL userAddOrEdit (?, ?, ?, ?, ?, ?)';
-    mysqlConnection.query(query, [id, nombre, email, clave, celular, foto], (err, rows, fields) => {
+router.put('/users/:identification', (req, res) => {
+    const { fullname, email, phone, avatar, username, _password } = req.body
+    const { identification } = req.params;
+    var hash = cryptr.encrypt(req.body._password);
+    console.log(hash);
+    //_password = hash;
+    const query = 'CALL sp_update_user (?, ?, ?, ?, ?, ?, ?)';
+    mysqlConnection.query(query, [fullname, identification, email, phone, avatar, username, hash], (err, rows, fields) => {
         if (!err) {
             res.json({ Status: 'User Update' });
         } else {
+            res.json(err);
             console.log(err);
         }
     });

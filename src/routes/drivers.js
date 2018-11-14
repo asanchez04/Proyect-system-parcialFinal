@@ -68,6 +68,7 @@ router.put('/drivers/:identification', (req, res) => {
         if (!err) {
             res.json({ Status: 'Driver Update' });
         } else {
+            res.json(err);
             console.log(err);
         }
     });
