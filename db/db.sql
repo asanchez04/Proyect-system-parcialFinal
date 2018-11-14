@@ -6,6 +6,14 @@ INSERT INTO proyecto.user values
 INSERT INTO proyecto.driver values 
 	(1, 'Juancho Perez', 12345, 'Juancho@hotmail.com','juancho123', 6572519, 'MXC235', '1', '1'),
     (2, 'Andrea Ortiz', 54321, 'Andrea@hotmail.com','andrea123', 6571045, 'TMM123', '2', '2');
+
+"fullname": "Daniel Castillo", 
+"identification": 122333, 
+"email": "Daniel@hotmail.com", 
+"phone": 6572525, 
+"avatar": "No", 
+"username": "Danicast", 
+"_password": "daniel123"
    
     
     
